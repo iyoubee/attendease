@@ -5,10 +5,12 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
+import { z } from "zod";
+import bcrypt from "bcrypt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,8 +22,8 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      role: "user" | "admin";
       // ...other properties
-      // role: UserRole;
     };
   }
 
@@ -38,30 +40,66 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
   adapter: PrismaAdapter(db),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "jsmith@gmail.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        const loginSchema = z.object({
+          email: z.string().email(),
+          password: z.string(),
+        });
+        const creds = loginSchema.parse(credentials);
+
+        const user = await db.user.findUnique({
+          where: { email: creds.email },
+        });
+        if (!user) {
+          throw new Error("Invalid email!");
+        }
+
+        const isValid = bcrypt.compareSync(creds.password, user.passwordHash);
+
+        if (!isValid) {
+          throw new Error("Invalid password!");
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
+      },
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
+  jwt: {
+    secret: "super-secret",
+    maxAge: 15 * 24 * 30 * 60, // 15 days
+  },
+  pages: {
+    signIn: "/login",
+  },
 };
 
 /**
