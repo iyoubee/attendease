@@ -7,7 +7,6 @@ import {
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { env } from "~/env";
 import { db } from "~/server/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -64,7 +63,7 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const loginSchema = z.object({
           email: z.string().email(),
           password: z.string(),
