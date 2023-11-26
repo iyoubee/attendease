@@ -84,6 +84,7 @@ const Login: React.FC = () => {
                       <TextInput
                         withAsterisk
                         label="Email"
+                        type="email"
                         placeholder="your@email.com"
                         {...form.getInputProps("email")}
                       />
@@ -91,6 +92,7 @@ const Login: React.FC = () => {
                         withAsterisk
                         label="Password"
                         placeholder="password"
+                        type="password"
                         {...form.getInputProps("password")}
                       />
 
