@@ -6,6 +6,7 @@ import { MantineProvider } from "@mantine/core";
 import { api } from "~/utils/api";
 import "@mantine/core/styles.css";
 import "~/styles/globals.css";
+import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,6 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <MantineProvider>
         <Component {...pageProps} />
+        <Toaster />
       </MantineProvider>
     </SessionProvider>
   );

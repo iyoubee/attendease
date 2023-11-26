@@ -9,11 +9,22 @@ import {
   useCombobox,
   Input,
   InputBase,
+  LoadingOverlay,
 } from "@mantine/core";
 import { api } from "~/utils/api";
+import toast from "react-hot-toast";
 
 const Subscribe: React.FC = () => {
   const packageList = api.package.getAll.useQuery();
+  const register = api.subscribe.create.useMutation({
+    onSuccess: () => {
+      toast.success("Successfully subscribe!");
+    },
+    onError: (error) => {
+      toast.error("Error, " + error.message);
+    },
+  });
+
   const [value, setValue] = useState<string | null>(null);
 
   const form = useForm({
@@ -50,6 +61,7 @@ const Subscribe: React.FC = () => {
     return packageList.data?.find((item) => item.id === id);
   };
 
+  const loading = packageList.isLoading || register.isLoading;
   return (
     <>
       <main>
@@ -61,9 +73,22 @@ const Subscribe: React.FC = () => {
                 <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg border-0 bg-gray-300 shadow-lg">
                   <div className="flex-auto px-4 py-10 lg:px-10">
                     <form
-                      onSubmit={form.onSubmit((values) => console.log(values))}
+                      onSubmit={form.onSubmit((values) =>
+                        register.mutate({
+                          domain: values.email_domain,
+                          name: values.company_name,
+                          package: values.package,
+                          password: values.password,
+                        }),
+                      )}
                       className="flex flex-col gap-3"
                     >
+                      <LoadingOverlay
+                        visible={loading}
+                        zIndex={1000}
+                        overlayProps={{ radius: "sm", blur: 2 }}
+                      />
+
                       <TextInput
                         withAsterisk
                         label="Company Name"
@@ -83,9 +108,11 @@ const Subscribe: React.FC = () => {
                         <Combobox
                           store={combobox}
                           onOptionSubmit={(val) => {
+                            form.setValues({ package: val });
                             setValue(val);
                             combobox.closeDropdown();
                           }}
+                          {...form.getInputProps("package")}
                         >
                           <Combobox.Target>
                             <InputBase
