@@ -37,7 +37,10 @@ const Subscribe: React.FC = () => {
         redirect: false,
       });
       if (res?.ok) {
-        toast.success("Successfully subscribe!");
+        toast.success(
+          "Successfully subscribe!, login with admin@" +
+            form.values.email_domain,
+        );
       } else {
         toast.error("Error, " + res?.error);
       }
