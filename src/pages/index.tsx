@@ -7,7 +7,6 @@ import Navbar from "~/components/Navbar";
 const Landing: React.FC = () => {
   return (
     <>
-      <Navbar transparent />
       <main>
         <div
           className="relative flex content-center items-center justify-center pb-32 pt-16"
