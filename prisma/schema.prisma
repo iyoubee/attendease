@@ -49,6 +49,23 @@ model User {
     passwordHash String
     accounts     Account[]
     sessions     Session[]
+    company      Company   @relation(fields: [id], references: [id])
+}
+
+model Company {
+    id      String  @id @default(cuid())
+    name    String?
+    domain  String  @unique
+    user    User[]
+    package Package @relation(fields: [id], references: [id])
+}
+
+model Package {
+    id      String    @id @default(cuid())
+    name    String?
+    Price   Int
+    maxUser Int
+    Company Company[]
 }
 
 model VerificationToken {
