@@ -13,12 +13,34 @@ import {
 } from "@mantine/core";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Subscribe: React.FC = () => {
+  const { data: session, status } = useSession();
+
+  const router = useRouter();
+
+  if (status == "authenticated") {
+    if (session.user.role == "admin") {
+      router.replace("/admin");
+    } else {
+      router.replace("/dashboard");
+    }
+  }
   const packageList = api.package.getAll.useQuery();
   const register = api.subscribe.create.useMutation({
-    onSuccess: () => {
-      toast.success("Successfully subscribe!");
+    onSuccess: async () => {
+      const res = await signIn("credentials", {
+        email: "admin@" + form.values.email_domain,
+        password: form.values.password,
+        redirect: false,
+      });
+      if (res?.ok) {
+        toast.success("Successfully subscribe!");
+      } else {
+        toast.error("Error, " + res?.error);
+      }
     },
     onError: (error) => {
       toast.error("Error, " + error.message);
