@@ -1,7 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import FooterSmall from "~/components/FooterSmall";
+import { useForm, isNotEmpty, hasLength } from "@mantine/form";
+import {
+  Button,
+  Group,
+  TextInput,
+  Combobox,
+  useCombobox,
+  Input,
+  InputBase,
+} from "@mantine/core";
+import { api } from "~/utils/api";
 
 const Subscribe: React.FC = () => {
+  const packageList = api.package.getAll.useQuery();
+  const [value, setValue] = useState<string | null>(null);
+
+  const form = useForm({
+    initialValues: {
+      company_name: "",
+      email_domain: "",
+      package: "",
+      password: "",
+      termsOfService: false,
+    },
+
+    validate: {
+      company_name: isNotEmpty("Please input company name."),
+      email_domain: isNotEmpty("Please input domain."),
+      package: isNotEmpty("Choose package."),
+      password: hasLength(
+        { min: 8 },
+        "Password must be more than 8 characters long",
+      ),
+    },
+  });
+
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
+  const options = packageList.data?.map((item) => (
+    <Combobox.Option value={item.id} key={item.id}>
+      {item.name}, {item.Price}, max user: {item.maxUser}
+    </Combobox.Option>
+  ));
+
+  const findPackageById = (id: string) => {
+    return packageList.data?.find((item) => item.id === id);
+  };
+
   return (
     <>
       <main>
@@ -12,79 +60,74 @@ const Subscribe: React.FC = () => {
               <div className="w-full px-4 lg:w-4/12">
                 <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg border-0 bg-gray-300 shadow-lg">
                   <div className="flex-auto px-4 py-10 lg:px-10">
-                    <form>
-                      <div className="relative mb-3 w-full">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase text-gray-700"
-                          htmlFor="grid-password"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          className="w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-700 placeholder-gray-400 shadow focus:outline-none focus:ring"
-                          placeholder="Email"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                      </div>
-                      <div className="relative mb-3 w-full">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase text-gray-700"
-                          htmlFor="grid-password"
-                        >
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          className="w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-700 placeholder-gray-400 shadow focus:outline-none focus:ring"
-                          placeholder="Password"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                      </div>
+                    <form
+                      onSubmit={form.onSubmit((values) => console.log(values))}
+                      className="flex flex-col gap-3"
+                    >
+                      <TextInput
+                        withAsterisk
+                        label="Company Name"
+                        type="text"
+                        placeholder="JoCloud Corp"
+                        {...form.getInputProps("company_name")}
+                      />
+                      <TextInput
+                        withAsterisk
+                        label="Email Domain"
+                        type="text"
+                        placeholder="aws.com"
+                        {...form.getInputProps("email_domain")}
+                      />
                       <div>
-                        <label className="inline-flex cursor-pointer items-center">
-                          <input
-                            id="customCheckLogin"
-                            type="checkbox"
-                            className="form-checkbox ml-1 h-5 w-5 rounded border-0 text-gray-800"
-                            style={{ transition: "all .15s ease" }}
-                          />
-                          <span className="ml-2 text-sm font-semibold text-gray-700">
-                            Remember me
-                          </span>
-                        </label>
+                        <Input.Label required>Choose Package</Input.Label>
+                        <Combobox
+                          store={combobox}
+                          onOptionSubmit={(val) => {
+                            setValue(val);
+                            combobox.closeDropdown();
+                          }}
+                        >
+                          <Combobox.Target>
+                            <InputBase
+                              component="button"
+                              pointer
+                              rightSection={<Combobox.Chevron />}
+                              onClick={() => combobox.toggleDropdown()}
+                            >
+                              {value ? (
+                                findPackageById(value)?.name
+                              ) : (
+                                <Input.Placeholder>
+                                  Pick value
+                                </Input.Placeholder>
+                              )}
+                            </InputBase>
+                          </Combobox.Target>
+
+                          <Combobox.Dropdown>
+                            <Combobox.Options>{options}</Combobox.Options>
+                          </Combobox.Dropdown>
+                        </Combobox>
                       </div>
 
-                      <div className="mt-6 text-center">
-                        <button
-                          className="mb-1 mr-1 w-full rounded bg-gray-900 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none hover:shadow-lg focus:outline-none active:bg-gray-700"
-                          type="button"
-                          style={{ transition: "all .15s ease" }}
+                      <TextInput
+                        withAsterisk
+                        type="password"
+                        label="Password"
+                        placeholder="password"
+                        {...form.getInputProps("password")}
+                      />
+
+                      <Group justify="flex-end" mt="md">
+                        <Button
+                          variant="filled"
+                          type="submit"
+                          className="bg-black"
                         >
-                          Sign In
-                        </button>
-                      </div>
+                          Submit
+                        </Button>
+                      </Group>
                     </form>
-                  </div>
-                </div>
-                <div className="mt-6 flex flex-wrap">
-                  <div className="w-1/2">
-                    <a
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      className="text-gray-300"
-                    >
-                      <small>Forgot password?</small>
-                    </a>
-                  </div>
-                  <div className="w-1/2 text-right">
-                    <a
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      className="text-gray-300"
-                    >
-                      <small>Create new account</small>
-                    </a>
                   </div>
                 </div>
               </div>
