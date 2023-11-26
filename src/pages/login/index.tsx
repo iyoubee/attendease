@@ -1,14 +1,17 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import FooterSmall from "~/components/FooterSmall";
 import { useForm } from "@mantine/form";
-import { Button, Group, TextInput } from "@mantine/core";
-import { useSession } from "next-auth/react";
+import { Button, Group, LoadingOverlay, TextInput } from "@mantine/core";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
   const { data: session, status } = useSession();
 
   const router = useRouter();
+
   if (status == "authenticated") {
     if (session.user.name == "admin") {
       router.replace("/admin");
@@ -17,6 +20,7 @@ const Login: React.FC = () => {
     }
   }
 
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -31,6 +35,29 @@ const Login: React.FC = () => {
     },
   });
 
+  const handleSubmit = async () => {
+    if (form.isValid()) {
+      setLoading(true);
+      try {
+        const res = await signIn("credentials", {
+          email: form.values.email,
+          password: form.values.password,
+          redirect: false,
+        });
+
+        if (res?.ok) {
+          toast.success("Successfully login!");
+        } else {
+          toast.error("Error, " + res?.error);
+        }
+      } catch (error) {
+        toast.error("Error");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <>
       <main>
@@ -42,9 +69,18 @@ const Login: React.FC = () => {
                 <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg border-0 bg-gray-300 shadow-lg">
                   <div className="flex-auto px-4 py-10 lg:px-10">
                     <form
-                      onSubmit={form.onSubmit((values) => console.log(values))}
+                      onSubmit={async (e) => {
+                        form.validate();
+                        e.preventDefault(); // Prevent the default form submission behavior
+                        await handleSubmit();
+                      }}
                       className="flex flex-col gap-3"
                     >
+                      <LoadingOverlay
+                        visible={loading}
+                        zIndex={1000}
+                        overlayProps={{ radius: "sm", blur: 2 }}
+                      />
                       <TextInput
                         withAsterisk
                         label="Email"

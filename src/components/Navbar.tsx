@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface NavbarProps {
   transparent?: boolean;
@@ -80,23 +81,25 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                       });
                   }}
                 >
-                  <i className="fas fa-arrow-alt-circle-down"></i> Login
+                  <i className="fas fa-arrow-alt-circle-down"></i> Logout
                 </button>
               </li>
             ) : (
               <li className="flex items-center">
-                <button
-                  className={
-                    (props.transparent
-                      ? "bg-white text-gray-800 active:bg-gray-100"
-                      : "bg-pink-500 text-white active:bg-pink-600") +
-                    " mb-3 ml-3 rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
-                  }
-                  type="button"
-                  style={{ transition: "all .15s ease" }}
-                >
-                  <i className="fas fa-arrow-alt-circle-down"></i> Login
-                </button>
+                <Link href={"/login"}>
+                  <button
+                    className={
+                      (props.transparent
+                        ? "bg-white text-gray-800 active:bg-gray-100"
+                        : "bg-pink-500 text-white active:bg-pink-600") +
+                      " mb-3 ml-3 rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
+                    }
+                    type="button"
+                    style={{ transition: "all .15s ease" }}
+                  >
+                    <i className="fas fa-arrow-alt-circle-down"></i> Login
+                  </button>
+                </Link>
               </li>
             )}
           </ul>

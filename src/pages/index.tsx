@@ -1,3 +1,5 @@
+"use client";
+import Link from "next/link";
 import React from "react";
 import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
@@ -36,16 +38,18 @@ const Landing: React.FC = () => {
                     Empowering Productivity, One Clock-In at a Time: Your
                     Gateway to Seamless Attendance Management with AttendEase
                   </p>
-                  <button
-                    className={
-                      "mt-5 bg-white text-gray-800 active:bg-gray-100" +
-                      " rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
-                    }
-                    type="button"
-                    style={{ transition: "all .15s ease" }}
-                  >
-                    <i className="fas fa-arrow-alt-circle-down"></i> Subscribe
-                  </button>
+                  <Link href={"/subscribe"}>
+                    <button
+                      className={
+                        "mt-5 bg-white text-gray-800 active:bg-gray-100" +
+                        " rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
+                      }
+                      type="button"
+                      style={{ transition: "all .15s ease" }}
+                    >
+                      <i className="fas fa-arrow-alt-circle-down"></i> Subscribe
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
