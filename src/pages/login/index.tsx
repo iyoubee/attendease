@@ -2,8 +2,21 @@ import React from "react";
 import FooterSmall from "~/components/FooterSmall";
 import { useForm } from "@mantine/form";
 import { Button, Group, TextInput } from "@mantine/core";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login: React.FC = () => {
+  const { data: session, status } = useSession();
+
+  const router = useRouter();
+  if (status == "authenticated") {
+    if (session.user.name == "admin") {
+      router.replace("/admin");
+    } else {
+      router.replace("/dashboard");
+    }
+  }
+
   const form = useForm({
     initialValues: {
       email: "",

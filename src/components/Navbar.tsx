@@ -1,11 +1,17 @@
 "use client";
 import React, { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface NavbarProps {
   transparent?: boolean;
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [navbarOpen, setNavbarOpen] = useState(false);
 
   return (
@@ -49,20 +55,50 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           id="example-navbar-warning"
         >
           <ul className="flex list-none flex-col lg:ml-auto lg:flex-row">
-            <li className="flex items-center">
-              <button
-                className={
-                  (props.transparent
-                    ? "bg-white text-gray-800 active:bg-gray-100"
-                    : "bg-pink-500 text-white active:bg-pink-600") +
-                  " mb-3 ml-3 rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
-                }
-                type="button"
-                style={{ transition: "all .15s ease" }}
-              >
-                <i className="fas fa-arrow-alt-circle-down"></i> Login
-              </button>
-            </li>
+            {status == "authenticated" ? (
+              <li className="flex items-center">
+                <button
+                  className={
+                    (props.transparent
+                      ? "bg-white text-gray-800 active:bg-gray-100"
+                      : "bg-pink-500 text-white active:bg-pink-600") +
+                    " mb-3 ml-3 rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
+                  }
+                  type="button"
+                  style={{ transition: "all .15s ease" }}
+                  onClick={async () => {
+                    await signOut({
+                      redirect: false,
+                      callbackUrl: "/login",
+                    })
+                      .then((data) => {
+                        router.replace(data.url);
+                        toast.success("Logged Out!");
+                      })
+                      .catch(() => {
+                        toast.error("Error");
+                      });
+                  }}
+                >
+                  <i className="fas fa-arrow-alt-circle-down"></i> Login
+                </button>
+              </li>
+            ) : (
+              <li className="flex items-center">
+                <button
+                  className={
+                    (props.transparent
+                      ? "bg-white text-gray-800 active:bg-gray-100"
+                      : "bg-pink-500 text-white active:bg-pink-600") +
+                    " mb-3 ml-3 rounded px-4 py-2 text-xs font-bold uppercase shadow outline-none hover:shadow-md focus:outline-none lg:mb-0 lg:mr-1"
+                  }
+                  type="button"
+                  style={{ transition: "all .15s ease" }}
+                >
+                  <i className="fas fa-arrow-alt-circle-down"></i> Login
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

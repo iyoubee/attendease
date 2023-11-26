@@ -22,7 +22,7 @@ const Subscribe: React.FC = () => {
   const router = useRouter();
 
   if (status == "authenticated") {
-    if (session.user.role == "admin") {
+    if (session.user.name == "admin") {
       router.replace("/admin");
     } else {
       router.replace("/dashboard");
