@@ -20,6 +20,8 @@ const Dashboard: React.FC = () => {
     }
   }
 
+  console.log(session?.user);
+
   return (
     <>
       <main>

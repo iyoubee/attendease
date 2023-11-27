@@ -21,15 +21,19 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
-      role: "user" | "admin";
+      name: string | null;
+      email: string | null;
+      role: string;
       // ...other properties
     };
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    id: string;
+    name: string | null;
+    email: string | null;
+    role: string;
+  }
 }
 
 /**
@@ -43,10 +47,18 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.sub = user.id;
       }
 
       return token;
     },
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub,
+      },
+    }),
   },
   session: {
     strategy: "jwt",
