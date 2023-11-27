@@ -49,15 +49,17 @@ model User {
     passwordHash String
     accounts     Account[]
     sessions     Session[]
-    company      Company   @relation(fields: [id], references: [id])
+    companyId    String
+    company      Company   @relation(fields: [companyId], references: [id])
 }
 
 model Company {
-    id      String  @id @default(cuid())
-    name    String?
-    domain  String  @unique
-    user    User[]
-    package Package @relation(fields: [id], references: [id])
+    id        String  @id @default(cuid())
+    name      String?
+    domain    String  @unique
+    user      User[]
+    packageId String
+    package   Package @relation(fields: [packageId], references: [id])
 }
 
 model Package {
