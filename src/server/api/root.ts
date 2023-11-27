@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { subscribeRouter } from "./routers/subscibe";
 import { packageRouter } from "./routers/package";
+import { AttendanceRouter } from "./routers/attendance";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { packageRouter } from "./routers/package";
 export const appRouter = createTRPCRouter({
   subscribe: subscribeRouter,
   package: packageRouter,
+  attendance: AttendanceRouter
 });
 
 // export type definition of API
