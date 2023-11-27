@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
   }
 
   if (status == "authenticated") {
-    if (session.user.name == "admin") {
+    if (session.user.role != "user") {
       router.replace("/");
     }
   }

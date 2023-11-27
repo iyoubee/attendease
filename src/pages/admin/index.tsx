@@ -10,8 +10,12 @@ const Admin: React.FC = () => {
 
   const router = useRouter();
 
+  if (status == "unauthenticated") {
+    router.replace("/");
+  }
+
   if (status == "authenticated") {
-    if (session.user.name != "admin") {
+    if (session.user.role != "admin") {
       router.replace("/");
     }
   }
