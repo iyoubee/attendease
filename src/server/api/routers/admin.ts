@@ -2,7 +2,6 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 
-
 export function randomPassword(){
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
     const string_length = 8;
@@ -23,7 +22,6 @@ export function randomPassword(){
             charCount += 1;
         }
     }
-
     return randomstring
 }
 
@@ -58,21 +56,23 @@ export const AdminRouter = createTRPCRouter({
 
                 }
             })
-            return createUserCompany;
-
-        
+            return createUserCompany; 
     }),
-
-
 
     deleteUser: protectedProcedure
         .input(
             z.object({
-                email: z.string().min(1)
+                userId: z.string().min(1)
             })
         )    
         .query(async ({ ctx, input }) => {
-            const email = input.email;
-            return null;
+            const userId = input.userId;
+
+            const deleteAcc = await ctx.db.user.delete({
+                where: {
+                    id : userId,
+                }
+            })
+            return deleteAcc;
     }),
 })
