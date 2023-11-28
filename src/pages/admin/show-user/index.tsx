@@ -3,10 +3,8 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
-import { useForm, isNotEmpty } from "@mantine/form";
 import toast from "react-hot-toast";
-import { LoadingOverlay, TextInput, Group, Button, Table
- } from "@mantine/core";
+import { Button, Table } from "@mantine/core";
 
 const AdminShowUser: React.FC = () => {
   const { data: session, status } = useSession();
