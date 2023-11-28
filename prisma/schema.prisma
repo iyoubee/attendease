@@ -49,6 +49,7 @@ model User {
     passwordHash String
     accounts     Account[]
     sessions     Session[]
+    attendances  Attendance[]
     companyId    String
     company      Company   @relation(fields: [companyId], references: [id])
 }
@@ -76,4 +77,11 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Attendance {
+    id          String      @id @default(cuid())
+    userId      String
+    user        User        @relation(fields: [userId], references: [id]) 
+    date        DateTime    @default(now())
 }
