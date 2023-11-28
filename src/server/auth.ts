@@ -24,6 +24,7 @@ declare module "next-auth" {
       name: string | null;
       email: string | null;
       role: string;
+      companyId: string;
       // ...other properties
     };
   }
@@ -50,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.sub = user.id;
         token.role = user.role;
-        token.companyId = user.companyId
+        token.companyId = user.companyId;
       }
 
       return token;
@@ -61,7 +62,7 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: token.sub,
         role: token.role,
-        companyId: token.companyId
+        companyId: token.companyId,
       },
     }),
   },
@@ -105,7 +106,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
-          companyId: user.companyId
+          companyId: user.companyId,
         };
       },
     }),
