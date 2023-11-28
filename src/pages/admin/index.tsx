@@ -26,6 +26,10 @@ const Admin: React.FC = () => {
           <button onClick={()=> {
             router.replace('/admin/create')
           }}>Buat user</button>
+
+          <button onClick={()=> {
+            router.replace('/admin/show-user')
+          }}>Lihat daftar pengguna</button>
         </section>
       </main>
     </>
