@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 
@@ -34,7 +34,7 @@ export const AdminRouter = createTRPCRouter({
                 companyId: z.string().min(1)
             })
         )    
-        .query(async ({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
             const email = input.email;
             const name = input.name;
             const companyId = input.companyId;
@@ -42,12 +42,12 @@ export const AdminRouter = createTRPCRouter({
             const password = randomPassword();
             const hashedPassword = bcrypt.hashSync(password, 3);
 
-            const createUserCompany = await ctx.db.user.create({
+            await ctx.db.user.create({
                 data: {
                     name,
                     email,
                     role : 'user',
-                    passwordHash: bcrypt.hashSync(hashedPassword, 3),
+                    passwordHash: hashedPassword,
                     company: {
                         connect : {
                             id : companyId,
@@ -56,7 +56,7 @@ export const AdminRouter = createTRPCRouter({
 
                 }
             })
-            return createUserCompany; 
+            return password; 
     }),
 
     deleteUser: protectedProcedure
@@ -65,7 +65,7 @@ export const AdminRouter = createTRPCRouter({
                 userId: z.string().min(1)
             })
         )    
-        .query(async ({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
             const userId = input.userId;
 
             const deleteAcc = await ctx.db.user.delete({
@@ -75,4 +75,24 @@ export const AdminRouter = createTRPCRouter({
             })
             return deleteAcc;
     }),
+
+    getAllUser: publicProcedure
+    .input(
+        z.object({
+            companyId: z.string()
+        })
+    )
+    .query(async({ctx, input} ) => {
+        const companyId = input.companyId;
+        return await ctx.db.user.findMany({
+            where : {
+                company: {
+                    id : companyId,
+                },
+                role: "user"
+                
+            }
+        })
+    }
+    )
 })

@@ -1,9 +1,7 @@
 "use client";
 import React from "react";
-import FooterSmall from "~/components/FooterSmall";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Navbar from "~/components/Navbar";
 
 const Admin: React.FC = () => {
   const { data: session, status } = useSession();
@@ -25,7 +23,9 @@ const Admin: React.FC = () => {
       <main>
         <section className="flex h-screen w-full items-center justify-center bg-red-300">
           <div>INI halaman admin</div>
-          <FooterSmall absolute />
+          <button onClick={()=> {
+            router.replace('/admin/create')
+          }}>Buat user</button>
         </section>
       </main>
     </>

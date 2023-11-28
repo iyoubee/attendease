@@ -24,7 +24,7 @@ declare module "next-auth" {
       name: string | null;
       email: string | null;
       role: string;
-      companyId: string;
+      companyId: string | null;
       // ...other properties
     };
   }
@@ -34,7 +34,7 @@ declare module "next-auth" {
     name: string | null;
     email: string | null;
     role: string;
-    companyId: string;
+    companyId: string | null;
   }
 }
 
