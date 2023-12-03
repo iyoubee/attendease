@@ -83,25 +83,27 @@ export const AttendanceRouter = createTRPCRouter({
 
     reverseTodayAttendance: protectedProcedure.input(z.object({ userIds: z.array(z.string()) })).mutation(async ({ ctx, input }) => {
         try {
-            const { startDay } = getCurrentDate();
+            const { startDay, current } = getCurrentDate();
 
             for (const userId of input.userIds) {
                 const attendance = await ctx.db.attendance.findFirst({
                     where: {
                         AND: [
-                            { date: { lt: new Date() } },
+                            { date: { lt: current } },
                             { date: { gte: startDay } },
                             { userId: { equals: userId } }
                         ]
                     }
                 })
 
-                await ctx.db.attendance.upsert({
+                console.log("hi", attendance)
+
+                const changed = await ctx.db.attendance.upsert({
                     where: {
-                        id: attendance?.id
+                        id: attendance?.id || ""
                     },
                     update: {
-                        attended: false
+                        attended: !attendance?.attended
                     },
                     create: {
                         user: {
@@ -112,7 +114,10 @@ export const AttendanceRouter = createTRPCRouter({
                         attended: true
                     }
                 });
+                console.log(changed)
             }
+            
+            return true;
         } catch (error) {
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',

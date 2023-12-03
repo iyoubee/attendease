@@ -6,9 +6,11 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { User } from "@prisma/client";
+import { Button } from '@mantine/core';
+import toast from "react-hot-toast";
 
 const Attendance: NextPage = () => {
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
+    const [selectedRows, setSelectedRows] = useState<string[]>([]);
     const router = useRouter()
     
     let currentDate = new Date((new Date).toLocaleString("en-US", {
@@ -17,11 +19,11 @@ const Attendance: NextPage = () => {
 
     const { data: session, status } = useSession();
 
-    const { data: attendances, isLoading } = api.attendance.getAllTodayAttendance.useQuery({
+    const { data: attendances, isLoading, refetch: refetchAttendance } = api.attendance.getAllTodayAttendance.useQuery({
         companyID: session?.user.companyId as string
     })
 
-    const { data: userData, isLoading: userLoading } = api.admin.getAllUser.useQuery({
+    const { data: userData, isLoading: userLoading, refetch: refetchUserData } = api.admin.getAllUser.useQuery({
         companyId: session?.user.companyId as string
     })
 
@@ -39,20 +41,21 @@ const Attendance: NextPage = () => {
         }) as ReactNode[][],
     };
     
-    
+    const reverseAttendance = api.attendance.reverseTodayAttendance.useMutation()
+
     const rows = tableData.body?.map((element) => (
         <Table.Tr
-          key={element[0] as number}
-          bg={selectedRows.includes(element[0] as number) ? 'var(--mantine-color-blue-light)' : undefined}
+          key={element[0] as string}
+          bg={selectedRows.includes(element[0] as string) ? 'var(--mantine-color-blue-light)' : undefined}
         >
           <Table.Td>
             <Checkbox
               aria-label="Select row"
-              checked={selectedRows.includes(element[0] as number)}
+              checked={selectedRows.includes(element[0] as string)}
               onChange={(event) =>
                 setSelectedRows(
                   event.currentTarget.checked
-                    ? [...selectedRows, element[0] as number]
+                    ? [...selectedRows, element[0] as string]
                     : selectedRows.filter((position) => position !== element[0])
                 )
               }
@@ -88,6 +91,14 @@ const Attendance: NextPage = () => {
                     </Table.Thead>
                     <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
+                <Button variant="filled" size="md" color="blue" className = "bg-sky-500" onClick={async () => {
+                    await reverseAttendance.mutate({
+                        userIds: selectedRows
+                    })
+                    await refetchUserData()
+                    await refetchAttendance()
+                    toast.success("Successfully updated selected attendances")
+                }}> Update selected attendances </Button>
             </div>: <div className="flex flex-col h-screen w-full items-center justify-center px-16 gap-y-8"> <Title order={1}> Belum ada data </Title> </div>}
         </div>
     )
