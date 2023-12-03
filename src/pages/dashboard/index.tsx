@@ -3,7 +3,6 @@ import React from "react";
 import FooterSmall from "~/components/FooterSmall";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
 import { Button } from "@mantine/core";
 import toast from "react-hot-toast";
@@ -26,7 +25,7 @@ const Dashboard: React.FC = () => {
   const currentDate = new Date()
   const currentDateString = currentDate.toDateString()
 
-  const attendanceRecs = api.attendance.isTodayAttendanceExist.useQuery({userId: session!.user.id}).data
+  const attendanceRecs = api.attendance.isTodayAttendanceExist.useQuery({userId: session?.user.id as string}).data
   
   const submitAttendance = api.attendance.submitTodayAttendance.useMutation()
 
