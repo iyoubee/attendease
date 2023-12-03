@@ -84,4 +84,5 @@ model Attendance {
     userId      String
     user        User        @relation(fields: [userId], references: [id]) 
     date        DateTime    @default(now())
+    attended    Boolean     @default(false)
 }
