@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -50,7 +51,8 @@ export const AttendanceRouter = createTRPCRouter({
                         connect: {
                             id: input.userId
                         }
-                    }
+                    },
+                    attended: true
                 }
             })
 
@@ -73,12 +75,50 @@ export const AttendanceRouter = createTRPCRouter({
               }
             },
             select: {
-              user: true
+              user: true,
+              attended: true,
             }
            });
     }),
 
-    // reverseTodayAttendance: protectedProcedure.input(z.object({ usersId:  })).mutation(async ({ ctx, input }) => {
-        
-    // })
+    reverseTodayAttendance: protectedProcedure.input(z.object({ userIds: z.array(z.string()) })).mutation(async ({ ctx, input }) => {
+        try {
+            const { startDay } = getCurrentDate();
+
+            for (const userId of input.userIds) {
+                const attendance = await ctx.db.attendance.findFirst({
+                    where: {
+                        AND: [
+                            { date: { lt: new Date() } },
+                            { date: { gte: startDay } },
+                            { userId: { equals: userId } }
+                        ]
+                    }
+                })
+
+                await ctx.db.attendance.upsert({
+                    where: {
+                        id: attendance?.id
+                    },
+                    update: {
+                        attended: false
+                    },
+                    create: {
+                        user: {
+                            connect: {
+                                id: userId
+                            }
+                        },
+                        attended: true
+                    }
+                });
+            }
+        } catch (error) {
+            throw new TRPCError({
+                code: 'INTERNAL_SERVER_ERROR',
+                message: 'An unexpected error occurred, please try again later.',
+                cause: error,
+              });   
+        }
+    })
 })

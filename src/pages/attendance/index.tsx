@@ -34,12 +34,13 @@ const Attendance: NextPage = () => {
                 user.id,
                 user.name,
                 user.email,
-                attendances?.some(attendance => attendance.user.id === user.id)
+                attendances?.some(attendance => attendance.user.id === user.id && attendance.attended)
         ];
         }) as ReactNode[][],
     };
     
-      const rows = tableData.body?.map((element) => (
+    
+    const rows = tableData.body?.map((element) => (
         <Table.Tr
           key={element[0] as number}
           bg={selectedRows.includes(element[0] as number) ? 'var(--mantine-color-blue-light)' : undefined}
