@@ -2,6 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Button } from "@mantine/core";
 
 const Admin: React.FC = () => {
   const { data: session, status } = useSession();
@@ -21,21 +22,37 @@ const Admin: React.FC = () => {
   return (
     <>
       <main>
-        <section className="flex h-screen w-full items-center justify-center bg-red-300">
-          <button
+        <section className="flex h-screen w-full items-center justify-center gap-3 bg-red-300">
+          <Button
+            variant="filled"
+            type="submit"
+            className="bg-black"
             onClick={() => {
               router.push("/admin/create");
             }}
           >
             Buat user
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="filled"
+            type="submit"
+            className="bg-black"
             onClick={() => {
               router.push("/admin/show-user");
             }}
           >
             Lihat daftar pengguna
-          </button>
+          </Button>
+          <Button
+            variant="filled"
+            type="submit"
+            className="bg-black"
+            onClick={() => {
+              router.push("/attendance");
+            }}
+          >
+            Lihat absensi
+          </Button>
         </section>
       </main>
     </>

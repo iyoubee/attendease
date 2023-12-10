@@ -50,6 +50,7 @@ const AdminShowUser: React.FC = () => {
                 });
                 getAllUser.refetch;
               }}
+              className="bg-red-500"
             >
               Delete User
             </Button>
@@ -65,19 +66,22 @@ const AdminShowUser: React.FC = () => {
   return (
     <>
       <main>
-        <section className="flex h-screen w-full items-center justify-center bg-red-300">
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Name</Table.Th>
-                <Table.Th>Email</Table.Th>
-                <Table.Th>Generated Password</Table.Th>
-                <Table.Th>isReset</Table.Th>
-                <Table.Th>Delete User</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{listUser()}</Table.Tbody>
-          </Table>
+        <section className="flex h-screen w-full flex-col items-center justify-center gap-5 bg-red-300">
+          <div className="text-3xl font-bold">List All User</div>
+          <div className="w-4/6">
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Name</Table.Th>
+                  <Table.Th>Email</Table.Th>
+                  <Table.Th>Generated Password</Table.Th>
+                  <Table.Th>isReset</Table.Th>
+                  <Table.Th>Delete User</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{listUser()}</Table.Tbody>
+            </Table>
+          </div>
         </section>
       </main>
     </>

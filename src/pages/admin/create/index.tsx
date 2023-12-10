@@ -35,11 +35,13 @@ const AdminCreateUser: React.FC = () => {
   const form = useForm({
     initialValues: {
       username: "",
+      fullname: "",
       termsOfService: false,
     },
 
     validate: {
       username: isNotEmpty("Please input username."),
+      fullname: isNotEmpty("Please input fullname."),
     },
   });
 
@@ -54,7 +56,7 @@ const AdminCreateUser: React.FC = () => {
             <form
               onSubmit={form.onSubmit((values) => {
                 registerUser.mutate({
-                  name: values.username,
+                  name: values.fullname,
                   email:
                     values.username + "@" + session?.user.email?.split("@")[1],
                   companyId: session.user.companyId!,
@@ -63,9 +65,16 @@ const AdminCreateUser: React.FC = () => {
             >
               <TextInput
                 withAsterisk
-                label="Username"
+                label="Fullname"
                 type="text"
                 placeholder="Foo"
+                {...form.getInputProps("fullname")}
+              />
+              <TextInput
+                withAsterisk
+                label="Username"
+                type="text"
+                placeholder="Bar"
                 {...form.getInputProps("username")}
               />
               <Group justify="flex-end" mt="md">
