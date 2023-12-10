@@ -20,45 +20,48 @@ const AdminShowUser: React.FC = () => {
       router.replace("/");
     }
   }
-  
+
   const getAllUser = api.admin.getAllUser.useQuery({
     companyId: session?.user.companyId != null ? session.user.companyId : "",
-  })
+  });
 
   const deleteUser = api.admin.deleteUser.useMutation({
     onSuccess: (res) => {
-      toast.success("Success Delete User with name, " + res.name)
+      toast.success("Success Delete User with name, " + res.name);
     },
     onError: (error) => {
-        toast.error("Error," + error.message)
-    }
-  })
+      toast.error("Error," + error.message);
+    },
+  });
 
   const listUser = () => {
-
-    if (getAllUser.data != null){
-    const rows = getAllUser?.data.map((element) => (
+    if (getAllUser.data != null) {
+      const rows = getAllUser?.data.map((element) => (
         <Table.Tr key={element.id}>
           <Table.Td>{element.name}</Table.Td>
           <Table.Td>{element.email}</Table.Td>
+          <Table.Td>{element.passwordGenerated}</Table.Td>
+          <Table.Td>{element.isReset ? "yes" : "no"}</Table.Td>
           <Table.Td>
-            <Button onClick={() => { 
-              deleteUser.mutate({
-                userId: element.id,
-              })
-              getAllUser.refetch
-            }}>
+            <Button
+              onClick={() => {
+                deleteUser.mutate({
+                  userId: element.id,
+                });
+                getAllUser.refetch;
+              }}
+            >
               Delete User
             </Button>
           </Table.Td>
         </Table.Tr>
       ));
-      return rows
-  }
+      return rows;
+    }
     return;
-  }
+  };
 
-  console.log(getAllUser.data)
+  console.log(getAllUser.data);
   return (
     <>
       <main>
@@ -68,6 +71,8 @@ const AdminShowUser: React.FC = () => {
               <Table.Tr>
                 <Table.Th>Name</Table.Th>
                 <Table.Th>Email</Table.Th>
+                <Table.Th>Generated Password</Table.Th>
+                <Table.Th>isReset</Table.Th>
                 <Table.Th>Delete User</Table.Th>
               </Table.Tr>
             </Table.Thead>

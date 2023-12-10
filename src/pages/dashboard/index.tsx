@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FooterSmall from "~/components/FooterSmall";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -30,6 +30,7 @@ const Dashboard: React.FC = () => {
   const resetPassword = api.onboarding.resetPassword.useMutation({
     onSuccess: () => {
       close();
+      setLoading(false);
       toast.success("Success reset password!");
     },
     onError: (error) => {
@@ -54,9 +55,16 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  console.log(check);
+  const [opened, { open, close }] = useDisclosure(false);
 
-  const [opened, { open, close }] = useDisclosure(!check?.isReset);
+  useEffect(() => {
+    if (check) {
+      if (!check.isReset) {
+        open();
+      }
+    }
+  }, [check?.isReset]);
+
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
@@ -70,13 +78,6 @@ const Dashboard: React.FC = () => {
         value.length < 8 ? "Password must be more than 8 character" : null,
     },
   });
-
-  const handleSubmit2 = async () => {
-    if (form.isValid()) {
-      setLoading(true);
-      resetPassword.mutate({ id: session?.user.id as string, password: val });
-    }
-  };
 
   const renderButtonOrInfo = (attendanceData: object | undefined | null) => {
     if (attendanceData == null) {

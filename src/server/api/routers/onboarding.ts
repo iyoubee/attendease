@@ -21,6 +21,7 @@ export const OnboardingRouter = createTRPCRouter({
         data: {
           passwordHash: hashedPassword,
           isReset: true,
+          passwordGenerated: null,
         },
       });
     }),

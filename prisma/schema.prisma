@@ -42,17 +42,18 @@ model Session {
 }
 
 model User {
-    id           String       @id @default(cuid())
-    name         String?
-    email        String?      @unique
-    role         String       @default("user")
-    passwordHash String
-    accounts     Account[]
-    sessions     Session[]
-    attendances  Attendance[]
-    companyId    String
-    company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    isReset      Boolean      @default(false)
+    id                String       @id @default(cuid())
+    name              String?
+    email             String?      @unique
+    role              String       @default("user")
+    passwordHash      String
+    accounts          Account[]
+    sessions          Session[]
+    attendances       Attendance[]
+    companyId         String
+    company           Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    isReset           Boolean      @default(false)
+    passwordGenerated String?
 }
 
 model Company {
