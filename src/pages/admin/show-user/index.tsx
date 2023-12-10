@@ -28,6 +28,7 @@ const AdminShowUser: React.FC = () => {
   const deleteUser = api.admin.deleteUser.useMutation({
     onSuccess: (res) => {
       toast.success("Success Delete User with name, " + res.name);
+      window.location.reload();
     },
     onError: (error) => {
       toast.error("Error," + error.message);

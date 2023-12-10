@@ -22,36 +22,41 @@ const Admin: React.FC = () => {
   return (
     <>
       <main>
-        <section className="flex h-screen w-full items-center justify-center gap-3 bg-red-300">
+        <section className="flex flex-col gap-4 h-screen w-full items-center justify-center gap-3 bg-red-300">
+          <div className="bg-black text-white font-2xl p-4 text-2xl rounded-xl">
+            <span>
+              DASHBOARD ADMIN
+            </span>
+          </div>
           <Button
             variant="filled"
             type="submit"
-            className="bg-black"
+            className=" bg-yellow-300 p-2 rounded-xl text-black"
             onClick={() => {
               router.push("/admin/create");
             }}
           >
-            Buat user
+            Buat User
           </Button>
           <Button
             variant="filled"
             type="submit"
-            className="bg-black"
+            className=" bg-green-400 text-black p-2 rounded-xl"
             onClick={() => {
               router.push("/admin/show-user");
             }}
           >
-            Lihat daftar pengguna
+            Lihat Daftar Pengguna
           </Button>
           <Button
             variant="filled"
             type="submit"
-            className="bg-black"
+            className=" bg-red-500 p-2 rounded-xl"
             onClick={() => {
               router.push("/attendance");
             }}
           >
-            Lihat absensi
+            Lihat Absensi
           </Button>
         </section>
       </main>
