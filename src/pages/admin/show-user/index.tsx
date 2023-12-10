@@ -20,10 +20,10 @@ const AdminShowUser: React.FC = () => {
       router.replace("/");
     }
   }
-  
+
   const getAllUser = api.admin.getAllUser.useQuery({
     companyId: session?.user.companyId != null ? session.user.companyId : "",
-  })
+  });
 
   const deleteUser = api.admin.deleteUser.useMutation({
     onSuccess: (res) => {
@@ -31,17 +31,18 @@ const AdminShowUser: React.FC = () => {
       window.location.reload()
     },
     onError: (error) => {
-        toast.error("Error," + error.message)
-    }
-  })
+      toast.error("Error," + error.message);
+    },
+  });
 
   const listUser = () => {
-
-    if (getAllUser.data != null){
-    const rows = getAllUser?.data.map((element) => (
+    if (getAllUser.data != null) {
+      const rows = getAllUser?.data.map((element) => (
         <Table.Tr key={element.id}>
           <Table.Td>{element.name}</Table.Td>
           <Table.Td>{element.email}</Table.Td>
+          <Table.Td>{element.passwordGenerated}</Table.Td>
+          <Table.Td>{element.isReset ? "yes" : "no"}</Table.Td>
           <Table.Td>
             <Button className=" bg-red-500 text-white text-xl rounded-xl p-2" onClick={() => { 
               deleteUser.mutate({
@@ -54,11 +55,12 @@ const AdminShowUser: React.FC = () => {
           </Table.Td>
         </Table.Tr>
       ));
-      return rows
-  }
+      return rows;
+    }
     return;
-  }
+  };
 
+  console.log(getAllUser.data)
   return (
     <>
       <main>
@@ -68,6 +70,8 @@ const AdminShowUser: React.FC = () => {
               <Table.Tr>
                 <Table.Th>Name</Table.Th>
                 <Table.Th>Email</Table.Th>
+                <Table.Th>Generated Password</Table.Th>
+                <Table.Th>isReset</Table.Th>
                 <Table.Th>Delete User</Table.Th>
               </Table.Tr>
             </Table.Thead>

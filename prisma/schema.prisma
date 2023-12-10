@@ -42,25 +42,27 @@ model Session {
 }
 
 model User {
-    id           String    @id @default(cuid())
-    name         String?
-    email        String?   @unique
-    role         String    @default("user")
-    passwordHash String
-    accounts     Account[]
-    sessions     Session[]
-    attendances  Attendance[]
-    companyId    String
-    company      Company   @relation(fields: [companyId], references: [id])
+    id                String       @id @default(cuid())
+    name              String?
+    email             String?      @unique
+    role              String       @default("user")
+    passwordHash      String
+    accounts          Account[]
+    sessions          Session[]
+    attendances       Attendance[]
+    companyId         String
+    company           Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    isReset           Boolean      @default(false)
+    passwordGenerated String?
 }
 
 model Company {
-    id        String  @id @default(cuid())
+    id        String   @id @default(cuid())
     name      String?
-    domain    String  @unique
+    domain    String   @unique
     user      User[]
     packageId String
-    package   Package @relation(fields: [packageId], references: [id])
+    package   Package? @relation(fields: [packageId], references: [id])
 }
 
 model Package {
@@ -80,9 +82,9 @@ model VerificationToken {
 }
 
 model Attendance {
-    id          String      @id @default(cuid())
-    userId      String
-    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade) 
-    date        DateTime    @default(now())
-    attended    Boolean     @default(false)
+    id       String   @id @default(cuid())
+    userId   String
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    date     DateTime @default(now())
+    attended Boolean  @default(false)
 }

@@ -3,6 +3,7 @@ import { subscribeRouter } from "./routers/subscibe";
 import { packageRouter } from "./routers/package";
 import { AttendanceRouter } from "./routers/attendance";
 import { AdminRouter } from "./routers/admin";
+import { OnboardingRouter } from "./routers/onboarding";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   package: packageRouter,
   attendance: AttendanceRouter,
   admin: AdminRouter,
+  onboarding: OnboardingRouter,
 });
 
 // export type definition of API
