@@ -34,19 +34,20 @@ const Dashboard: React.FC = () => {
     submitAttendance.mutate({
       userId: userId
     })
-    toast.success("Successfully submitting today's attendance")
+    toast.success("Successfully submitting today's attendance, please refresh this page")
   }
+  
   const renderButtonOrInfo = (attendanceData: object | undefined | null) => {
     if (attendanceData == null) {
       return (
-        <div>
+        <div className="flex flex-col items-center">
           <div>Please record your attendance by clicking this button</div>
-          <Button onClick={(e) => {
-            e.preventDefault();
-            handleSubmit(session!.user.id)
-          }}>
-            Submit Attendance
-          </Button>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white p-2 m-2 rounded" onClick={(e) => {
+              e.preventDefault();
+              handleSubmit(session!.user.id)
+            }}>
+              Submit Attendance
+            </button>
         </div>
       )
     } else {
