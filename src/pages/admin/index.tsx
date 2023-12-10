@@ -22,14 +22,20 @@ const Admin: React.FC = () => {
     <>
       <main>
         <section className="flex h-screen w-full items-center justify-center bg-red-300">
-          <div>INI halaman admin</div>
-          <button onClick={()=> {
-            router.replace('/admin/create')
-          }}>Buat user</button>
-
-          <button onClick={()=> {
-            router.replace('/admin/show-user')
-          }}>Lihat daftar pengguna</button>
+          <button
+            onClick={() => {
+              router.push("/admin/create");
+            }}
+          >
+            Buat user
+          </button>
+          <button
+            onClick={() => {
+              router.push("/admin/show-user");
+            }}
+          >
+            Lihat daftar pengguna
+          </button>
         </section>
       </main>
     </>
