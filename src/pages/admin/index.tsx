@@ -21,13 +21,18 @@ const Admin: React.FC = () => {
   return (
     <>
       <main>
-        <section className="flex h-screen w-full items-center justify-center bg-red-300">
-          <div>INI halaman admin</div>
-          <button onClick={()=> {
+        <section className="h-screen w-full items-center justify-center bg-red-300 gap-4 flex flex-col">
+          <div className=" bg-white text-2xl rounded-2xl p-4">Dashboard Admin</div>
+
+          <button className=" bg-yellow-400 py-2 px-2 rounded-xl" onClick={()=> {
+            router.replace('/attendance')
+          }}>Lihat Rekap Absen</button>
+
+          <button className=" bg-green-400 py-2 px-2 rounded-xl" onClick={()=> {
             router.replace('/admin/create')
           }}>Buat user</button>
 
-          <button onClick={()=> {
+          <button className=" bg-sky-400 p-2 rounded-xl" onClick={()=> {
             router.replace('/admin/show-user')
           }}>Lihat daftar pengguna</button>
         </section>

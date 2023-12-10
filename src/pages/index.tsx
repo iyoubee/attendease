@@ -1,11 +1,15 @@
 "use client";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
 
 const Landing: React.FC = () => {
-  return (
+
+  const { data: session, status } = useSession();
+
+   return (
     <>
       <main>
         <div
@@ -46,7 +50,7 @@ const Landing: React.FC = () => {
                       type="button"
                       style={{ transition: "all .15s ease" }}
                     >
-                      <i className="fas fa-arrow-alt-circle-down"></i> Subscribe
+                      <i className="fas fa-arrow-alt-circle-down"></i> {session != null ? "Dashboard" : "Subscibe"}
                     </button>
                   </Link>
                 </div>

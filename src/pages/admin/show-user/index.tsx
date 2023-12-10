@@ -28,6 +28,7 @@ const AdminShowUser: React.FC = () => {
   const deleteUser = api.admin.deleteUser.useMutation({
     onSuccess: (res) => {
       toast.success("Success Delete User with name, " + res.name)
+      window.location.reload()
     },
     onError: (error) => {
         toast.error("Error," + error.message)
@@ -42,7 +43,7 @@ const AdminShowUser: React.FC = () => {
           <Table.Td>{element.name}</Table.Td>
           <Table.Td>{element.email}</Table.Td>
           <Table.Td>
-            <Button onClick={() => { 
+            <Button className=" bg-red-500 text-white text-xl rounded-xl p-2" onClick={() => { 
               deleteUser.mutate({
                 userId: element.id,
               })
@@ -58,7 +59,6 @@ const AdminShowUser: React.FC = () => {
     return;
   }
 
-  console.log(getAllUser.data)
   return (
     <>
       <main>

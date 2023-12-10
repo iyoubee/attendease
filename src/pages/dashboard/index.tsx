@@ -30,7 +30,6 @@ const Dashboard: React.FC = () => {
   const submitAttendance = api.attendance.submitTodayAttendance.useMutation()
 
   const handleSubmit = (userId: string) => {
-    console.log("masuk")
     submitAttendance.mutate({
       userId: userId
     })

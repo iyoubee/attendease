@@ -95,9 +95,6 @@ export const AttendanceRouter = createTRPCRouter({
                         ]
                     }
                 })
-
-                console.log("hi", attendance)
-
                 const changed = await ctx.db.attendance.upsert({
                     where: {
                         id: attendance?.id || ""
@@ -114,7 +111,6 @@ export const AttendanceRouter = createTRPCRouter({
                         attended: true
                     }
                 });
-                console.log(changed)
             }
             
             return true;
